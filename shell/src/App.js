@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 
+const App1 = React.lazy(() => import('app1/App')); // Corrigez le chemin si nécessaire
+const App2 = React.lazy(() => import('app2/App'));
 
 const App = () => {
     const [activeApp, setActiveApp] = useState('');
@@ -36,18 +38,14 @@ const App = () => {
                     </ul>
                 </div>
             </nav>
-
-            {/* Corps principal */}
             <div style={mainStyle}>
                 {activeApp === '' && (
                     <h1 style={welcomeTextStyle}>Bienvenue dans le Shell FYC</h1>
                 )}
-                {activeApp === 'app1' && (
-                    <h1 style={welcomeTextStyle}>Bienvenue dans le cours FYC APP 1</h1>
-                )}
-                {activeApp === 'app2' && (
-                    <h1 style={welcomeTextStyle}>Bienvenue dans le cours FYC APP 2</h1>
-                )}
+                <Suspense fallback={<div>Chargement...</div>}>
+                    {activeApp === 'app1' && <App1 />}
+                    {activeApp === 'app2' && <App2 />}
+                </Suspense>
             </div>
         </div>
     );
