@@ -30,7 +30,7 @@ module.exports = {
             name: 'app1',
             filename: 'remoteEntry.js',
             exposes: {
-                './Welcome': './src/Welcome', // Expose le composant Welcome
+                './App': './src/App',
             },
         }),
         new HtmlWebpackPlugin({
