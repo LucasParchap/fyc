@@ -30,7 +30,11 @@ module.exports = {
             name: 'app2',
             filename: 'remoteEntry.js',
             exposes: {
-                './App': './src/App',
+                './App': './src/Panier',
+            },
+            shared: {
+                react: { singleton: true, eager: true, requiredVersion: '^17.0.2' },
+                'react-dom': { singleton: true, eager: true, requiredVersion: '^17.0.2' },
             },
         }),
         new HtmlWebpackPlugin({

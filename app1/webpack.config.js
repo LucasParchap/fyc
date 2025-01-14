@@ -14,6 +14,10 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
@@ -30,7 +34,11 @@ module.exports = {
             name: 'app1',
             filename: 'remoteEntry.js',
             exposes: {
-                './App': './src/App',
+                './App': './src/Catalogue',
+            },
+            shared: {
+                react: { singleton: true, eager: true, requiredVersion: '^17.0.2' },
+                'react-dom': { singleton: true, eager: true, requiredVersion: '^17.0.2' },
             },
         }),
         new HtmlWebpackPlugin({
