@@ -1,12 +1,63 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import eventBus from 'shell/eventBus';
 
 const Catalogue = ({ products, loading }) => {
+    const [productCounts, setProductCounts] = useState({});
+
+    useEffect(() => {
+        const handleUpdateCatalogue = ({ id, change }) => {
+            setProductCounts((prevCounts) => {
+                if (!prevCounts[id] && change < 0) return prevCounts;
+
+                const updatedCounts = { ...prevCounts };
+                updatedCounts[id] = (updatedCounts[id] || 0) + change;
+
+                if (updatedCounts[id] <= 0) {
+                    delete updatedCounts[id];
+                }
+
+                return updatedCounts;
+            });
+        };
+
+        eventBus.on('update-catalogue', handleUpdateCatalogue);
+
+        return () => {
+            eventBus.off('update-catalogue', handleUpdateCatalogue);
+        };
+    }, []);
+
+    const addToCart = (product) => {
+        eventBus.emit('add-to-cart', product);
+
+        setProductCounts((prevCounts) => ({
+            ...prevCounts,
+            [product.id]: (prevCounts[product.id] || 0) + 1,
+        }));
+    };
+
+    const removeFromCart = (product) => {
+        eventBus.emit('remove-from-cart', product);
+
+        setProductCounts((prevCounts) => {
+            if (!prevCounts[product.id]) return prevCounts;
+
+            const updatedCounts = { ...prevCounts };
+            updatedCounts[product.id] -= 1;
+
+            if (updatedCounts[product.id] === 0) {
+                delete updatedCounts[product.id];
+            }
+
+            return updatedCounts;
+        });
+    };
+
     if (loading) {
         return <div className="text-center text-blue-500">Chargement des produits...</div>;
     }
 
     return (
-
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
             {products.map((product) => (
                 <div
@@ -23,12 +74,21 @@ const Catalogue = ({ products, loading }) => {
                         <div className="text-blue-600 font-bold text-md mb-4">${product.price}</div>
                     </div>
                     <div className="flex justify-between mt-4 space-x-2">
-                        <button className="flex-1 py-1 px-3 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition">
+                        <button
+                            onClick={() => addToCart(product)}
+                            className="flex-1 py-1 px-3 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+                        >
                             Ajouter au panier
                         </button>
-                        <button className="flex-1 py-1 px-3 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition">
+                        <button
+                            onClick={() => removeFromCart(product)}
+                            className="flex-1 py-1 px-3 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition"
+                        >
                             Supprimer
                         </button>
+                        <span className="text-gray-700 text-sm flex items-center justify-center w-10 bg-gray-200 rounded-md">
+                            {productCounts[product.id] || 0}
+                        </span>
                     </div>
                 </div>
             ))}

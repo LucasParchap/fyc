@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = {
     mode: 'development',
@@ -32,6 +32,10 @@ module.exports = {
     plugins: [
         new ModuleFederationPlugin({
             name: 'shell',
+            filename: 'remoteEntry.js',
+            exposes: {
+                './eventBus': './src/shared/eventBus',
+            },
             remotes: {
                 app1: 'app1@http://localhost:3001/remoteEntry.js',
                 app2: 'app2@http://localhost:3002/remoteEntry.js',

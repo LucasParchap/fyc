@@ -36,6 +36,9 @@ module.exports = {
             exposes: {
                 './App': './src/Catalogue',
             },
+            remotes: {
+                shell: 'shell@http://localhost:3000/remoteEntry.js',
+            },
             shared: {
                 react: { singleton: true, eager: true, requiredVersion: '^17.0.2' },
                 'react-dom': { singleton: true, eager: true, requiredVersion: '^17.0.2' },

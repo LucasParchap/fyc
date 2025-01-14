@@ -1,18 +1,72 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import eventBus from 'shell/eventBus';
 
 const Panier = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
 
-    const [cartItems, setCartItems] = useState([
-        { id: 1, name: "Produit 1", price: 29.99 },
-        { id: 2, name: "Produit 2", price: 49.99 },
-        { id: 3, name: "Produit 3", price: 19.99 },
-    ]);
+    useEffect(() => {
+        const handleAddToCart = (product) => {
+            setCartItems((prevItems) => {
+                const existingItemIndex = prevItems.findIndex((item) => item.id === product.id);
+                if (existingItemIndex !== -1) {
+                    const updatedItems = [...prevItems];
+                    updatedItems[existingItemIndex].quantity += 1;
+                    return updatedItems;
+                } else {
+                    return [...prevItems, { ...product, quantity: 1 }];
+                }
+            });
+        };
 
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
+        const handleRemoveFromCart = (product) => {
+            setCartItems((prevItems) => {
+                const existingItemIndex = prevItems.findIndex((item) => item.id === product.id);
+                if (existingItemIndex !== -1) {
+                    const updatedItems = [...prevItems];
+                    if (updatedItems[existingItemIndex].quantity > 1) {
+                        updatedItems[existingItemIndex].quantity -= 1;
+                        return updatedItems;
+                    } else {
+                        return updatedItems.filter((item) => item.id !== product.id);
+                    }
+                }
+                return prevItems;
+            });
+        };
+
+        eventBus.on('add-to-cart', handleAddToCart);
+        eventBus.on('remove-from-cart', handleRemoveFromCart);
+
+        return () => {
+            eventBus.off('add-to-cart', handleAddToCart);
+            eventBus.off('remove-from-cart', handleRemoveFromCart);
+        };
+    }, []);
+
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     const handleRemoveItem = (id) => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+        setCartItems((prevItems) => {
+            const existingItemIndex = prevItems.findIndex((item) => item.id === id);
+            if (existingItemIndex !== -1) {
+                const updatedItems = [...prevItems];
+                if (updatedItems[existingItemIndex].quantity > 1) {
+                    updatedItems[existingItemIndex].quantity -= 1;
+
+                    eventBus.emit('update-catalogue', { id, change: -1 });
+
+                    return updatedItems;
+                } else {
+                    const removedItem = updatedItems.splice(existingItemIndex, 1)[0];
+
+                    eventBus.emit('update-catalogue', { id, change: -removedItem.quantity });
+
+                    return updatedItems;
+                }
+            }
+            return prevItems;
+        });
     };
 
     return (
@@ -21,20 +75,22 @@ const Panier = () => {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="text-lg font-semibold text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition"
             >
-                🛒 Panier : {cartItems.length} article(s)
+                🛒 Panier : {cartItems.reduce((sum, item) => sum + item.quantity, 0)} article(s)
             </button>
 
             {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg z-10 overflow-hidden">
+                <div className="absolute right-0 mt-2 w-96 bg-white shadow-lg rounded-lg z-10 overflow-hidden">
                     <div className="max-h-48 overflow-y-auto">
                         {cartItems.map((item) => (
                             <div
                                 key={item.id}
-                                className="flex justify-between items-center px-4 py-2 border-b last:border-b-0 text-gray-800"
+                                className="flex justify-between items-center px-6 py-2 border-b last:border-b-0 text-gray-800"
                             >
                                 <div>
-                                    <span>{item.name}</span>
-                                    <span className="ml-4 text-blue-600">${item.price.toFixed(2)}</span>
+                                    <span>{item.title}</span>
+                                    <span className="ml-4 text-blue-600">
+                            ${item.price.toFixed(2)} x {item.quantity}
+                        </span>
                                 </div>
                                 <button
                                     onClick={() => handleRemoveItem(item.id)}
@@ -45,11 +101,12 @@ const Panier = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="px-4 py-2 font-bold text-gray-800">
+                    <div className="px-6 py-2 font-bold text-gray-800">
                         Total: ${totalPrice.toFixed(2)}
                     </div>
                 </div>
             )}
+
         </div>
     );
 };
