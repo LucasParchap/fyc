@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import eventBus from 'shell/eventBus';
-import useLanguageStore from 'shell/LanguageStore';
 
 const Catalogue = ({ products, loading }) => {
     const [productCounts, setProductCounts] = useState({});
-    const { language } = useLanguageStore();
+    const [language, setLanguage] = useState('fr');
 
     useEffect(() => {
         const handleUpdateCatalogue = ({ id, change }) => {
@@ -21,11 +20,16 @@ const Catalogue = ({ products, loading }) => {
                 return updatedCounts;
             });
         };
+        const handleLanguageChange = (newLanguage) => {
+            setLanguage(newLanguage);
+        };
 
         eventBus.on('update-catalogue', handleUpdateCatalogue);
+        eventBus.on('language-change', handleLanguageChange);
 
         return () => {
             eventBus.off('update-catalogue', handleUpdateCatalogue);
+            eventBus.off('language-change', handleLanguageChange);
         };
     }, []);
 

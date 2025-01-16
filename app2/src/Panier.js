@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import eventBus from 'shell/eventBus';
-import useLanguageStore from 'shell/LanguageStore';
+
 
 const Panier = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [cartItems, setCartItems] = useState([]);
-    const { language } = useLanguageStore();
+    const [language, setLanguage] = useState('fr');
 
     useEffect(() => {
         const handleAddToCart = (product) => {
@@ -36,13 +36,18 @@ const Panier = () => {
                 return prevItems;
             });
         };
+        const handleLanguageChange = (newLanguage) => {
+            setLanguage(newLanguage);
+        };
 
         eventBus.on('add-to-cart', handleAddToCart);
         eventBus.on('remove-from-cart', handleRemoveFromCart);
+        eventBus.on('language-change', handleLanguageChange);
 
         return () => {
             eventBus.off('add-to-cart', handleAddToCart);
             eventBus.off('remove-from-cart', handleRemoveFromCart);
+            eventBus.off('language-change', handleLanguageChange);
         };
     }, []);
 

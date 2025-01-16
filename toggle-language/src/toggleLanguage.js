@@ -1,12 +1,24 @@
-import React from 'react';
-import useLanguageStore from 'shell/LanguageStore';
-
+import React, {useState, useEffect} from 'react';
+import eventBus from 'shell/eventBus';
 const ToggleLanguage = () => {
-    const { language, setLanguage } = useLanguageStore();
-    console.log('language', language);
+    const [language, setLanguage] = useState('fr');
+
+    useEffect(() => {
+        const handleLanguageChange = (newLanguage) => {
+            setLanguage(newLanguage);
+        };
+
+        eventBus.on('language-change', handleLanguageChange);
+
+        return () => {
+            eventBus.off('language-change', handleLanguageChange);
+        };
+    }, []);
 
     const toggleLanguage = () => {
-        setLanguage(language === 'fr' ? 'en' : 'fr');
+        const newLanguage = language === 'fr' ? 'en' : 'fr';
+        setLanguage(newLanguage);
+        eventBus.emit('language-change', newLanguage);
     };
 
     return (

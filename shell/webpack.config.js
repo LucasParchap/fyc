@@ -35,7 +35,6 @@ module.exports = {
             filename: 'remoteEntry.js',
             exposes: {
                 './eventBus': './src/shared/eventBus',
-                './LanguageStore': './src/shared/store.js',
             },
             remotes: {
                 app1: 'app1@http://localhost:3001/remoteEntry.js',
