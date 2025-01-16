@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import eventBus from 'shell/eventBus';
+import useLanguageStore from 'shell/LanguageStore';
 
 const Catalogue = ({ products, loading }) => {
     const [productCounts, setProductCounts] = useState({});
+    const { language } = useLanguageStore();
 
     useEffect(() => {
         const handleUpdateCatalogue = ({ id, change }) => {
@@ -76,15 +78,15 @@ const Catalogue = ({ products, loading }) => {
                     <div className="flex justify-between mt-4 space-x-2">
                         <button
                             onClick={() => addToCart(product)}
-                            className="flex-1 py-1 px-3 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+                            className="flex-1 py-2 px-4 min-w-[120px] h-[52px] bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
                         >
-                            Ajouter au panier
+                            {language === 'en' ? 'Add to cart' : 'Ajouter au panier'}
                         </button>
                         <button
                             onClick={() => removeFromCart(product)}
-                            className="flex-1 py-1 px-3 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition"
+                            className="flex-1 py-2 px-4 min-w-[120px] h-[52px] bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition"
                         >
-                            Supprimer
+                            {language === 'en' ? 'Delete' : 'Supprimer'}
                         </button>
                         <span className="text-gray-700 text-sm flex items-center justify-center w-10 bg-gray-200 rounded-md">
                             {productCounts[product.id] || 0}

@@ -2,7 +2,11 @@
   "name": "shell",
   "version": "1.0.0",
   "scripts": {
-    "start": "webpack serve"
+    "start": "concurrently \"npm run start:shell\" \"npm run start:app1\" \"npm run start:app2\" \"npm run start:toggle-language\"",
+    "start:shell": "webpack serve",
+    "start:app1": "cd ../app1 && npm start",
+    "start:app2": "cd ../app2 && npm start",
+    "start:toggle-language": "cd ../toggle-language && npm start"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -10,6 +14,7 @@
     "@babel/preset-react": "^7.26.3",
     "autoprefixer": "^10.4.20",
     "babel-loader": "^9.2.1",
+    "concurrently": "^9.1.2",
     "css-loader": "^7.1.2",
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.49",
@@ -25,6 +30,7 @@
     "mini-css-extract-plugin": "^2.9.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "shell": "^0.12.0"
+    "shell": "^0.12.0",
+    "zustand": "^4.5.6"
   }
 }

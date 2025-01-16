@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import eventBus from 'shell/eventBus';
+import useLanguageStore from 'shell/LanguageStore';
 
 const Panier = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const { language } = useLanguageStore();
 
     useEffect(() => {
         const handleAddToCart = (product) => {
@@ -73,9 +75,12 @@ const Panier = () => {
         <div className="relative">
             <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="text-lg font-semibold text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition"
+                className="w-56 h-12 text-lg font-semibold text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition flex items-center justify-center truncate"
             >
-                🛒 Panier : {cartItems.reduce((sum, item) => sum + item.quantity, 0)} article(s)
+                🛒 <span className="ml-1">{language === 'en' ? 'Cart' : 'Panier'}</span>
+                <span className="ml-1">
+                    {cartItems.reduce((sum, item) => sum + item.quantity, 0)} {language === 'en' ? 'item(s)' : 'article(s)'}
+                </span>
             </button>
 
             {isDropdownOpen && (
@@ -89,24 +94,23 @@ const Panier = () => {
                                 <div>
                                     <span>{item.title}</span>
                                     <span className="ml-4 text-blue-600">
-                            ${item.price.toFixed(2)} x {item.quantity}
-                        </span>
+                                        ${item.price.toFixed(2)} x {item.quantity}
+                                    </span>
                                 </div>
                                 <button
                                     onClick={() => handleRemoveItem(item.id)}
                                     className="text-red-500 hover:text-red-700 transition"
                                 >
-                                    Supprimer
+                                    {language === 'en' ? 'Remove' : 'Supprimer'}
                                 </button>
                             </div>
                         ))}
                     </div>
                     <div className="px-6 py-2 font-bold text-gray-800">
-                        Total: ${totalPrice.toFixed(2)}
+                        {language === 'en' ? 'Total' : 'Total'}: ${totalPrice.toFixed(2)}
                     </div>
                 </div>
             )}
-
         </div>
     );
 };

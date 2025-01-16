@@ -35,6 +35,7 @@ module.exports = {
             filename: 'remoteEntry.js',
             exposes: {
                 './eventBus': './src/shared/eventBus',
+                './LanguageStore': './src/shared/store.js',
             },
             remotes: {
                 app1: 'app1@http://localhost:3001/remoteEntry.js',
@@ -44,6 +45,7 @@ module.exports = {
             shared: {
                 react: { singleton: true, eager: true, requiredVersion: '^17.0.2' },
                 'react-dom': { singleton: true, eager: true, requiredVersion: '^17.0.2' },
+                zustand: { singleton: true },
             },
         }),
         new HtmlWebpackPlugin({

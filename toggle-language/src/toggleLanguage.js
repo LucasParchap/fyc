@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import useLanguageStore from 'shell/LanguageStore';
 
 const ToggleLanguage = () => {
-    const [language, setLanguage] = useState('fr');
+    const { language, setLanguage } = useLanguageStore();
+    console.log('language', language);
 
     const toggleLanguage = () => {
-        setLanguage((prevLang) => (prevLang === 'en' ? 'fr' : 'en'));
+        setLanguage(language === 'fr' ? 'en' : 'fr');
     };
 
     return (
