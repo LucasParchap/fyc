@@ -4,6 +4,7 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     "../app1/src/**/*.{js,jsx,ts,tsx}",
     "../app2/src/**/*.{js,jsx,ts,tsx}",
+    "../toggle-language/src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {},
