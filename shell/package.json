@@ -2,10 +2,11 @@
   "name": "shell",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm run start:shell\" \"npm run start:app1\" \"npm run start:app2\" \"npm run start:toggle-language\"",
+    "start": "concurrently \"npm run start:shell\" \"npm run start:app1\" \"npm run start:app2\" \"npm run start:app-users\" \"npm run start:toggle-language\"",
     "start:shell": "webpack serve",
     "start:app1": "cd ../app1 && npm start",
     "start:app2": "cd ../app2 && npm start",
+    "start:app-users": "cd ../app-users && npm start",
     "start:toggle-language": "cd ../toggle-language && npm start"
   },
   "devDependencies": {

@@ -1,15 +1,21 @@
 import React, { Suspense } from 'react';
-import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import {HashRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import useProducts from './hooks/products/useProducts';
 import Header from './components/Header';
 import '../index.css';
+import useUsers from "./hooks/users/useUsers";
 
 const Catalogue = React.lazy(() => import('app1/App'));
+const Users = React.lazy(() => import('app_users/App'));
 const App = () => {
-    const { products, loading, error } = useProducts();
+    const { products, productsLoading, productsError } = useProducts();
+    const { users, usersLoading, usersError } = useUsers();
 
-    if (error) {
-        return <div>Erreur : {error}</div>;
+    if (productsError) {
+        return <div>Erreur : {productsError}</div>;
+    }
+    if (usersError) {
+        return <div>Erreur : {usersError}</div>;
     }
 
     return (
@@ -21,7 +27,8 @@ const App = () => {
                         <Routes>
                             <Route path="*" element={<div>Page non trouvée</div>} />
                             <Route path="/" element={<Navigate to="/catalogue" replace />}/>
-                            <Route path="/catalogue/*" element={<Catalogue products={products} loading={loading} />} />
+                            <Route path="/catalogue/*" element={<Catalogue products={products} loading={productsLoading} />} />
+                            <Route path="/users/*" element={<Users users={users} loading={usersLoading} />} />
                         </Routes>
                     </Suspense>
                 </main>

@@ -18,6 +18,12 @@ const Header = () => {
                     >
                         Catalogue
                     </Link>
+                    <Link
+                        to="/users"
+                        className="text-lg font-medium hover:underline hover:text-gray-200 transition-all"
+                    >
+                        Users
+                    </Link>
                 </div>
                 <div className="flex items-center space-x-6">
                     <Suspense fallback={<div>Chargement du Toggle...</div>}>

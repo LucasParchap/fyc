@@ -1,21 +1,21 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ModuleFederationPlugin } = require('webpack').container;
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
 module.exports = {
     mode: 'development',
     devServer: {
-        port: 3000,
+        port: 3004,
         static: './dist',
     },
     entry: './src/index.js',
     output: {
-        publicPath: 'http://localhost:3000/',
+        publicPath: 'http://localhost:3004/',
     },
     module: {
         rules: [
             {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader", 'postcss-loader'],
+                use: ['style-loader', 'css-loader'],
             },
             {
                 test: /\.(js|jsx)$/,
@@ -31,16 +31,13 @@ module.exports = {
     },
     plugins: [
         new ModuleFederationPlugin({
-            name: 'shell',
+            name: 'app_users',
             filename: 'remoteEntry.js',
             exposes: {
-                './eventBus': './src/shared/eventBus',
+                './App': './src/Users',
             },
             remotes: {
-                app1: 'app1@http://localhost:3001/remoteEntry.js',
-                app2: 'app2@http://localhost:3002/remoteEntry.js',
-                toggleLanguage: 'toggleLanguage@http://localhost:3003/remoteEntry.js',
-                app_users: 'app_users@http://localhost:3004/remoteEntry.js',
+                shell: 'shell@http://localhost:3000/remoteEntry.js',
             },
             shared: {
                 react: { singleton: true, eager: true, requiredVersion: '^17.0.2' },

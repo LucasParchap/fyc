@@ -15,3 +15,19 @@ export const fetchProductById = async (id) => {
     }
     return response.json();
 };
+
+export const fetchUsers = async () => {
+    const response = await fetch(`${BASE_URL}/users`);
+    if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des utilisateurs.');
+    }
+    return response.json();
+};
+
+export const fetchUserById = async (id) => {
+    const response = await fetch(`${BASE_URL}/users/${id}`);
+    if (!response.ok) {
+        throw new Error(`Erreur lors de la récupération de l'utilisateur avec l'ID ${id}.`);
+    }
+    return response.json();
+};
