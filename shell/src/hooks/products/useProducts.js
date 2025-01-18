@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchProducts } from '../api/fakeStoreApi';
+import { fetchProducts } from '../../api/fakeStoreApi';
 
 const useProducts = () => {
     const [products, setProducts] = useState([]);

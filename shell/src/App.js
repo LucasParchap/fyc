@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
-import useProducts from './hooks/useProducts';
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import useProducts from './hooks/products/useProducts';
 import Header from './components/Header';
 import '../index.css';
 
@@ -12,14 +13,20 @@ const App = () => {
     }
 
     return (
-        <div>
-            <Header />
-            <main>
-                <Suspense fallback={<div>Chargement d'App1...</div>}>
-                    <Catalogue products={products} loading={loading} />
-                </Suspense>
-            </main>
-        </div>
+        <Router>
+            <div>
+                <Header />
+                <main>
+                    <Suspense fallback={<div>Chargement du Catalogue...</div>}>
+                        <Routes>
+                            <Route path="*" element={<div>Page non trouvée</div>} />
+                            <Route path="/" element={<Navigate to="/catalogue" replace />}/>
+                            <Route path="/catalogue/*" element={<Catalogue products={products} loading={loading} />} />
+                        </Routes>
+                    </Suspense>
+                </main>
+            </div>
+        </Router>
     );
 };
 
